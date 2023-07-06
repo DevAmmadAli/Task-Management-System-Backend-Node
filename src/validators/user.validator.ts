@@ -3,8 +3,8 @@ import Joi from "joi";
 import sendResponse, { HttpStatusKeys } from "../helper/responseHandler";
 
 export const signupValidation = Joi.object({
-  firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
+  firstName: Joi.string().max(12).required(),
+  lastName: Joi.string().max(12).required(),
   email: Joi.string().required().email(),
   password: Joi.string()
     .required()
@@ -28,7 +28,8 @@ const userValidate = (req: Request, res: Response, next: NextFunction) => {
       return sendResponse(
         res,
         HttpStatusKeys.BAD_REQUEST,
-        "Password mush have 1 special character, one upper & lower case character, one number and 8 to 12 character length"
+        "Password mush have one special character, one upper & lower case character\
+        and one number"
       );
     }
     return sendResponse(res, HttpStatusKeys.BAD_REQUEST, error.message);
