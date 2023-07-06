@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
-import ToDo from "../models/todo.model";
+import Task from "../models/task.model";
 import User, { UserModel } from "../models/user.model";
 import sendResponse, { HttpStatusKeys } from "../helper/responseHandler";
 import getTokenPayload from "../helper/getTokenPayload";
 
-export const addToDo = async (req: Request, res: Response) => {
+export const addTask = async (req: Request, res: Response) => {
   try {
     const { title, description, dueDate } = req.body;
 
@@ -15,48 +15,48 @@ export const addToDo = async (req: Request, res: Response) => {
 
     let user = User.findById(userId);
 
-    let toDo = new ToDo({
+    let task = new Task({
       title,
       description,
       dueDate,
       user: userId,
     });
 
-    await toDo.save();
+    await task.save();
 
     const updatedUser = await User.updateOne(
       { _id: userId },
       {
-        $push: { todos: [toDo._id] },
+        $push: { tasks: [task._id] },
       }
     );
 
     return sendResponse(
       res,
       HttpStatusKeys.CREATED,
-      "Todo Created Successfully",
-      toDo
+      "Task Created Successfully",
+      task
     );
   } catch (error) {
     return sendResponse(res, HttpStatusKeys.INTERNAL_SERVER_ERROR, "", error);
   }
 };
 
-export const getToDos = async (req: Request, res: Response) => {
+export const getTasks = async (req: Request, res: Response) => {
   try {
     const token = req.cookies.token;
 
     const userId = getTokenPayload("userId", token);
 
     const user = await User.findById(userId).populate({
-      path: "todos",
-      model: ToDo,
+      path: "tasks",
+      model: Task,
     });
 
     return sendResponse(
       res,
       HttpStatusKeys.OK,
-      "Todos Fetch Successfully",
+      "Tasks Fetch Successfully",
       user
     );
   } catch (error) {
@@ -64,18 +64,18 @@ export const getToDos = async (req: Request, res: Response) => {
   }
 };
 
-export const getToDo = async (req: Request, res: Response) => {
+export const getTask = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const IdTypeCheck = mongoose.Types.ObjectId.isValid(id);
     if (IdTypeCheck) {
-      const toDo = await ToDo.findById(id);
-      if (toDo) {
+      const task = await Task.findById(id);
+      if (task) {
         return sendResponse(
           res,
           HttpStatusKeys.OK,
-          "Todo Fetch Successfully",
-          toDo
+          "Task Fetch Successfully",
+          task
         );
       }
     }
@@ -85,14 +85,14 @@ export const getToDo = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteToDo = async (req: Request, res: Response) => {
+export const deleteTask = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
     const IdTypeCheck = mongoose.Types.ObjectId.isValid(id);
     if (IdTypeCheck) {
-      const toDo = await ToDo.findById(id);
-      if (toDo) {
+      const task = await Task.findById(id);
+      if (task) {
         const token = req.cookies.token;
 
         const userId = getTokenPayload("userId", token);
@@ -102,35 +102,35 @@ export const deleteToDo = async (req: Request, res: Response) => {
         const updatedUser = await User.updateOne(
           { _id: userId },
           {
-            $pullAll: { todos: [id] },
+            $pullAll: { tasks: [id] },
           }
         );
-        await toDo.deleteOne();
+        await task.deleteOne();
         return sendResponse(res, HttpStatusKeys.DELETED);
       }
     }
-    return sendResponse(res, HttpStatusKeys.NOT_FOUND, "Todo Not Found");
+    return sendResponse(res, HttpStatusKeys.NOT_FOUND, "Task Not Found");
   } catch (error) {
     return sendResponse(res, HttpStatusKeys.INTERNAL_SERVER_ERROR, "", error);
   }
 };
 
-export const updateToDo = async (req: Request, res: Response) => {
+export const updateTask = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const IdTypeCheck = mongoose.Types.ObjectId.isValid(id);
-    const toDo = await ToDo.findById(id);
-    if (IdTypeCheck && toDo) {
-      const updatedToDo = await ToDo.findOneAndUpdate(
+    const task = await Task.findById(id);
+    if (IdTypeCheck && task) {
+      const updatedTask = await Task.findOneAndUpdate(
         { _id: id },
         { ...req.body },
         {
           new: true,
         }
       );
-      return sendResponse(res, HttpStatusKeys.UPDATED, "", updatedToDo);
+      return sendResponse(res, HttpStatusKeys.UPDATED, "", updatedTask);
     }
-    return sendResponse(res, HttpStatusKeys.NOT_FOUND, "Todo Not Found");
+    return sendResponse(res, HttpStatusKeys.NOT_FOUND, "Task Not Found");
   } catch (error) {
     return sendResponse(res, HttpStatusKeys.INTERNAL_SERVER_ERROR, "", error);
   }

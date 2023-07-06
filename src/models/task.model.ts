@@ -1,17 +1,17 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 import { UserModel } from "./user.model";
 
-export interface TodoAttributes extends Document {
+export interface TaskAttributes extends Document {
   title: string;
   description: string;
   dueDate: Date;
 }
 
-interface TodoModel extends TodoAttributes {
+interface TaskModel extends TaskAttributes {
   user: UserModel;
 }
 
-const toDoSchema = new Schema<TodoModel>(
+const taskSchema = new Schema<TaskModel>(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
@@ -21,6 +21,6 @@ const toDoSchema = new Schema<TodoModel>(
   { timestamps: true }
 );
 
-const ToDo: Model<TodoModel> = mongoose.model("toDo", toDoSchema);
+const Task: Model<TaskModel> = mongoose.model("task", taskSchema);
 
-export default ToDo;
+export default Task;

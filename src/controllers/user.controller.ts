@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import sendResponse, { HttpStatusKeys } from "../helper/responseHandler";
 import User from "../models/user.model";
-import ToDo from "../models/todo.model";
+import Task from "../models/task.model";
 import getTokenPayload from "../helper/getTokenPayload";
 
 const maxAge = 60 * 60;
@@ -35,7 +35,14 @@ export const createUser = async (req: Request, res: Response) => {
       "User Created Successfully",
       user
     );
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code == 11000) {
+      return sendResponse(
+        res,
+        HttpStatusKeys.BAD_REQUEST,
+        "User with this email address is already exist"
+      );
+    }
     return sendResponse(res, HttpStatusKeys.INTERNAL_SERVER_ERROR, "", error);
   }
 };
@@ -92,8 +99,8 @@ export const getUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const user = await User.findById(id).populate({
-      path: "todos",
-      model: ToDo,
+      path: "tasks",
+      model: Task,
     });
 
     return user
@@ -110,7 +117,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     const user = await User.findById(id);
     if (user) {
       await user.deleteOne();
-      return sendResponse(res, HttpStatusKeys.DELETED, "User Deleted", user);
+      return sendResponse(res, HttpStatusKeys.DELETED, "User Deleted");
     }
     return sendResponse(res, HttpStatusKeys.NOT_FOUND, "User Not Found");
   } catch (error) {

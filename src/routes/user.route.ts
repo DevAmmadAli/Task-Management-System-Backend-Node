@@ -9,13 +9,12 @@ import {
   userLogin,
 } from "../controllers/user.controller";
 import userValidate from "../validators/user.validator";
-import requireAuth from "../middlewares/auth.middleware";
 import tokenAuthentication from "../middlewares/auth.middleware";
 
 const userRoutes = Router();
 
 userRoutes
-  .get("/", requireAuth, tokenAuthentication, getAllUsers) // GET /user - Return the list of users
+  .get("/", tokenAuthentication, getAllUsers) // GET /user - Return the list of users
   .get("/current", tokenAuthentication, getLoginUser) // GET /user/current get the current login user
   .get("/:id", tokenAuthentication, getUser) // GET /user/{id} - Return user with the id specified
   .post("/", userValidate, createUser) // POST /user - Adds a new user

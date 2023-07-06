@@ -1,7 +1,7 @@
 import express from "express";
 import createConnection from "./db.config";
 import dotenv from "dotenv";
-import todoRoutes from "./routes/todo.route";
+import taskRoutes from "./routes/task.route";
 import userRoutes from "./routes/user.route";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -15,8 +15,8 @@ app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 
-app.use("/todo", todoRoutes);
-app.use("/user", userRoutes);
+app.use("/tasks", taskRoutes);
+app.use("/users", userRoutes);
 
 createConnection()
   .then(() => {

@@ -15,7 +15,7 @@ const HttpStatus: HttpStatusModel = {
     message: "Not Found",
   },
   DELETED: {
-    code: 204,
+    code: 200,
     message: "Deleted Successfully",
   },
   CREATED: {

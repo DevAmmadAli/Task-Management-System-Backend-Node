@@ -1,5 +1,5 @@
 import mongoose, { Model, Schema } from "mongoose";
-import { TodoAttributes } from "./todo.model";
+import { TaskAttributes } from "./task.model";
 
 export interface UserModel extends Document {
   firstName: string;
@@ -7,7 +7,7 @@ export interface UserModel extends Document {
   email: string;
   password: string;
   isActive: boolean;
-  todos: TodoAttributes;
+  tasks: TaskAttributes;
 }
 
 const userSchema = new Schema<UserModel>(
@@ -17,10 +17,10 @@ const userSchema = new Schema<UserModel>(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     isActive: { type: Boolean, default: true },
-    todos: [
+    tasks: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "ToDo",
+        ref: "task",
       },
     ],
   },
