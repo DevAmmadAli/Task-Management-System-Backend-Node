@@ -79,7 +79,7 @@ export const getTask = async (req: Request, res: Response) => {
         );
       }
     }
-    return sendResponse(res, HttpStatusKeys.NOT_FOUND, "User Not Found");
+    return sendResponse(res, HttpStatusKeys.NOT_FOUND, "Task Not Found");
   } catch (error) {
     return sendResponse(res, HttpStatusKeys.INTERNAL_SERVER_ERROR, "", error);
   }

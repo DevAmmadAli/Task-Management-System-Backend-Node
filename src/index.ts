@@ -10,8 +10,12 @@ const app = express();
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
+const frontendOrigin =
+  process.env.NODE_ENV == "development"
+    ? process.env.FRONTEND_ORIGIN_LOCAL
+    : process.env.FRONTEND_ORIGIN_PROD;
 
-app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
+app.use(cors({ origin: frontendOrigin, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 
@@ -28,3 +32,5 @@ createConnection()
   .catch((error) => {
     console.error(`Failed to connect with Database: ${error}`);
   });
+
+export default app;

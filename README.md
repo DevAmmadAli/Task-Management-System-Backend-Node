@@ -39,7 +39,8 @@ This is a Task Management System built using Node.js and TypeScript. It allows y
       DB_CONN_STRING_LOCAL=your-local-mongo-address
       PORT=your-nodeapp-port
       SECRETKEY=your-secret-key
-      ORIGIN=frontend-origin-address
+      FRONTEND_ORIGIN_LOCAL=your-local-frontend-address
+      FRONTEND_ORIGIN_PROD=your-prod-frontend-address
       ```
 4.  Run the app:
     - Run the app for development.
